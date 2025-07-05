@@ -1,0 +1,51 @@
+#!/bin/bash
+
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+BLUE="\033[0;34m"
+PINK="\033[0;35m"
+NC="\033[0m"
+
+nb_total_tests=0
+nb_tests_passed=0
+nb_tests_failed=0
+maps_failed=()
+
+cd ../
+make re
+
+maps_dir=$(ls ./maps/example_files/maps/*)
+solved_dir="./maps/example_files/solved/"
+
+for map_name in $maps_dir; do
+  test="./setting_up $map_name"
+  ((nb_total_tests+=1))
+  ($test > temp_res.txt) |:
+  solved_name="$solved_dir$(basename "$map_name")"
+  diff -q temp_res.txt "$solved_name" > /dev/null
+  if [ "$?" = "0" ]; then
+    ((nb_tests_passed+=1))
+  else
+    ((nb_tests_failed+=1))
+    maps_failed+=("$map_name")
+  fi
+done
+
+rm -f temp_res.txt
+
+(( percent = nb_tests_passed * 100 / nb_total_tests ))
+
+echo "========================================================================="
+
+echo -e "||  ${BLUE}$nb_total_tests${NC} Tests finished  ||  ${GREEN}$nb_tests_passed${NC} Passed  ||  ${RED}$nb_tests_failed${NC} Failed  ||  ${PINK}$percent%${NC} Success   ||"
+
+echo "========================================================================="
+
+if [ "$nb_tests_failed" -gt 0 ]; then
+  echo -e "${RED}MAPS FAILED:${NC}"
+  for map in "${maps_failed[@]}"; do
+    basename "$map"
+  done
+fi
+
+make fclean

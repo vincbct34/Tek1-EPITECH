@@ -1,0 +1,127 @@
+#!/usr/bin/python3
+
+from sys import argv
+from math import *
+
+identity_matrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+
+def translation(x, y, t1, t2):
+    identity_matrix[0][2] = t1
+    identity_matrix[1][2] = t2
+    return identity_matrix
+
+def scaling(x, y, t3, t4):
+    identity_matrix[0][0] = t3
+    identity_matrix[1][1] = t4
+    return identity_matrix
+
+def rotation(x, y, t5):
+    identity_matrix[0][0] = cos(t5)
+    identity_matrix[0][1] = -sin(t5)
+    identity_matrix[1][0] = sin(t5)
+    identity_matrix[1][1] = cos(t5)
+    return identity_matrix
+
+def reflection(x, y, t6):
+    identity_matrix[0][0] = cos(2 * radians(t6))
+    identity_matrix[0][0] = sin(2 * radians(t6))
+    identity_matrix[0][0] = sin(2 * radians(t6))
+    identity_matrix[0][0] = -cos(2 * radians(t6))
+    return identity_matrix
+
+def flag_t(x, y, i, argc, argv):
+    if argv[i] == "-t":
+        if i + 2 < argc:
+            try:
+                t1 = int(argv[i + 1])
+                t2 = int(argv[i + 2])
+            except ValueError:
+                print("Error: invalid argument")
+                exit(84)
+        else:
+            print("Error: invalid argument")
+            exit(84)
+        translation(x, y, t1, t2)
+        print("Translation along vector ({}, {})".format(t1, t2))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(1), float(0), float(identity_matrix[0][2])))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(1), float(identity_matrix[1][2])))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(0), float(1)))
+        print("({:.2f}, {:.2f}) => ({:.2f}, {:.2f})".format(float(x), float(y), float(x) + float(t1), float(y) + float(t2)))
+
+def flag_s(x, y, i, argc, argv):
+    if argv[i] == "-s":
+        if i + 1 < argc:
+            try:
+                t6 = int(argv[i + 1])
+            except ValueError:
+                print("Error: invalid argument")
+                exit(84)
+        else:
+            print("Error: invalid argument")
+            exit(84)
+        reflection(x, y, t6)
+        print("Reflection over an axis with an inclination angle of {} degrees".format(t6))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(identity_matrix[0][0]), float(identity_matrix[0][1]), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(identity_matrix[1][0]), float(identity_matrix[1][1]), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(0), float(1)))
+        print("({:.2f}, {:.2f}) => ({:.2f}, {:.2f})".format(float(x), float(y), float(x) * float(cos(2 * radians(t6))) + float(y) * float(sin(2 * radians(t6))), float(x) * float(sin(2 * radians(t6))) - float(y) * float(cos(2 * radians(t6)))))
+
+def flag_z(x, y, i, argc, argv):
+    if argv[i] == "-z":
+        if i + 2 < argc:
+            try:
+                t3 = int(argv[i + 1])
+                t4 = int(argv[i + 2])
+            except ValueError:
+                print("Error: invalid argument")
+                exit(84)
+        else:
+            print("Error: invalid argument")
+            exit(84)
+        scaling(x, y, t3, t4)
+        print("Scaling by factors {} and {}".format(t3, t4))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(identity_matrix[0][0]), float(0), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(identity_matrix[1][1]), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(0), float(1)))
+        print("({:.2f}, {:.2f}) => ({:.2f}, {:.2f})".format(float(x), float(y), float(x) * float(t3), float(y) * float(t4)))
+
+def flag_r(x, y, i, argc, argv):
+    if argv[i] == "-r":
+        if i + 1 < argc:
+            try:
+                t5 = int(argv[i + 1])
+            except ValueError:
+                print("Error: invalid argument")
+                exit(84)
+        else:
+            print("Error: invalid argument")
+            exit(84)
+        rotation(x, y, radians(t5))
+        print("Rotation by a {} degree angle".format(t5))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(identity_matrix[0][0]), float(identity_matrix[0][1]), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(identity_matrix[1][0]), float(identity_matrix[1][1]), float(0)))
+        print("{:.2f}\t{:.2f}\t{:.2f}".format(float(0), float(0), float(1)))
+        print("({:.2f}, {:.2f}) => ({:.2f}, {:.2f})".format(float(x), float(y), float(x) * float(cos(radians(t5))) - float(y) * float(sin(radians(t5))), float(x) * float(sin(radians(t5))) + float(y) * float(cos(radians(t5)))))
+
+def main():
+    argc = len(argv)
+    if argc > 13:
+        print("Error: too many arguments")
+        exit(84)
+    x = argv[1]
+    y = argv[2]
+    try:
+        argv[1] = int(argv[1])
+        argv[2] = int(argv[2])
+    except ValueError:
+        print("Error: invalid argument")
+        exit(84)
+
+    for i in range(1, argc):
+        flag_t(x, y, i, argc, argv)
+        flag_s(x, y, i, argc, argv)
+        flag_z(x, y, i, argc, argv)
+        flag_r(x, y, i, argc, argv)
+
+if __name__ == "__main__":
+    main()

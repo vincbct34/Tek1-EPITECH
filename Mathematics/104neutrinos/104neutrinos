@@ -1,0 +1,62 @@
+#!/usr/bin/python3
+
+from sys import *
+from math import *
+
+def usage():
+    print("USAGE")
+    print("    ./104neutrinos n a h sd")
+    print("")
+    print("DESCRIPTION")
+    print("    n   number of values")
+    print("    a   arithmetic mean")
+    print("    h   harmonic mean")
+    print("    sd  standard deviation")
+    exit(84)
+
+def std_deviation(values, enter):
+    top_value = (values["n"] - 1) * (values["sd"] ** 2 + (values["new_mean"] - values["mean"]) ** 2) + ((enter - values["new_mean"]) ** 2)
+    sd = sqrt(top_value / values["n"])
+    return sd
+
+def update_values(n, a, h, sd, enter):
+    n += 1
+    new_mean = a + ((enter - a) / n)
+    new_h = n / ((1 / enter) + (n - 1) / h)
+    sd = std_deviation(values={"n": n, "sd": sd, "new_mean": new_mean, "mean": a}, enter=enter)
+    a = new_mean
+    h = new_h
+    return n, a, h, sd
+
+def main():
+    if len(argv) != 5:
+        usage()
+    try:
+        n = int(argv[1])
+        a = float(argv[2])
+        h = float(argv[3])
+        sd = float(argv[4])
+    except ValueError:
+        exit(84)
+    if n < 0 or a < 0 or h <= 0 or sd < 0:
+        exit(84)
+    while True:
+        enter = input("Enter next value: ")
+        if enter == "END":
+            exit(0)
+        try:
+            enter = float(enter)
+        except ValueError:
+            exit(84)
+        if enter < 0:
+            exit(84)
+        n, a, h, sd = update_values(n, a, h, sd, enter)
+        print("    Number of values: {}".format(n))
+        print("    Standard deviation: {:.2f}".format(sd))
+        print("    Arithmetic mean: {:.2f}".format(a))
+        print("    Root mean square: {:.2f}".format(sqrt((a ** 2) + (sd ** 2))))
+        print("    Harmonic mean: {:.2f}".format(h))
+        print("")
+
+if __name__ == "__main__":
+    main()

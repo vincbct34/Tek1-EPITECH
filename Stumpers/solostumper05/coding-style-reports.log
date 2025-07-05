@@ -1,0 +1,8 @@
+./Makefile:38: illegal token in column 11, giving up (hint: fix the file or remove it from the working set)
+./lib/libmy.a:1: MAJOR:C-O1
+./lib/my_getnbr.o:1: MAJOR:C-O1
+./lib/my_putchar.o:1: MAJOR:C-O1
+./lib/my_putstr.o:1: MAJOR:C-O1
+./lib/my_strlen.o:1: MAJOR:C-O1
+./luhn_validator:1: MAJOR:C-O1
+./src/main.o:1: MAJOR:C-O1
