@@ -39,6 +39,7 @@ OBJ			=	$(SRC:.c=.o)
 
 INC			= 	-I./include/ -I./include/structures/	\
 				-I./include/structures/simulation/		\
+				-I./include/
 
 LDFLAGS 	=	-L./lib -lmy -lcsfml-graphics -lcsfml-system -lm
 
